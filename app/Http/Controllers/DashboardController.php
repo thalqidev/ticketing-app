@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kategori;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the admin dashboard.
-     */
     public function index()
     {
-        $categories = Kategori::all();
+        if (auth()->user()->role !== 'admin') {
+            return redirect('/')->with('error', 'Regular user dilarang masuk ke area Admin Panel!');
+        }
 
-        return view('pages.admin.dashboard', compact('categories'));
+        return view('dashboard', [
+            'categories' => Kategori::all()
+        ]);
     }
 }

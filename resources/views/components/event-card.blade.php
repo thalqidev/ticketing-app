@@ -1,10 +1,10 @@
 @props([
-'title',
-'date',
-'location',
-'price',
-'image',
-'href' => null,
+'title' => 'Judul Event',
+    'date' => null,
+    'location' => 'Lokasi',
+    'price' => null,  
+    'image' => null, 
+    'href' => null,
 ])
 
 @php

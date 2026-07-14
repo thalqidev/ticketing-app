@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('lokasi');
             $table->string('gambar');
             $table->dateTime('tanggal_waktu');
+            $table->integer('durasi_jam')->default(3);
             $table->timestamps();
         });
     }

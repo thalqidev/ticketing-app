@@ -1,25 +1,34 @@
 <x-app-layout>
     <div class="max-w-7xl mx-auto py-8 px-6">
-        <!-- Event Header -->
+
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 shadow" role="alert">
+                <span class="block sm:inline">🎉 {{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 shadow" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
         <div class="card bg-base-100 shadow-xl mb-8">
             <div class="card-body">
                 <div class="flex flex-col lg:flex-row gap-8">
-                    <!-- Event Image -->
                     <div class="lg:w-1/2">
                         @php
-                        // Safe image URL handling
                         if ($event->gambar && filter_var($event->gambar, FILTER_VALIDATE_URL)) {
-                        $imageUrl = $event->gambar;
+                            $imageUrl = $event->gambar;
                         } else {
-                        $imageName = (!empty($event->gambar) && file_exists(public_path('storage/' . $event->gambar))) ? $event->gambar : 'konser.jpg';
-                        $imageUrl = asset('storage/' . $imageName);
+                            $imageName = !empty($event->gambar) ? $event->gambar : 'konser.jpg';
+                            $imageUrl = asset('storage/' . $imageName);
                         }
                         @endphp
 
                         <img src="{{ $imageUrl }}" alt="{{ $event->judul ?? $event->nama }}" class="w-full h-96 object-cover rounded-lg shadow-md">
                     </div>
 
-                    <!-- Event Details -->
                     <div class="lg:w-1/2">
                         <h1 class="text-4xl font-bold mb-4">{{ $event->judul ?? $event->nama }}</h1>
 
@@ -52,9 +61,12 @@
                                 </svg>
                                 <span>{{ $event->lokasi ?? 'Lokasi tidak tersedia' }}</span>
                             </div>
-                        </div>
+                            <div class="flex items-center text-sm text-gray-600 gap-2 mt-2">
+                                <span class="text-gray-500">⏱️</span>
+                                <span>Durasi Event: <strong class="text-gray-900">{{ $event->durasi_jam ?? 0 }} Jam</strong></span>
+                            </div>
+                        </div>                
 
-                        <!-- Description -->
                         @if ($event->deskripsi)
                         <div class="prose max-w-none mb-6">
                             <h3 class="text-lg font-semibold mb-2">Deskripsi Event</h3>
@@ -66,9 +78,8 @@
             </div>
         </div>
 
-        <!-- Ticket Options -->
         @if ($event->tikets && $event->tikets->count() > 0)
-        <div class="card bg-base-100 shadow-xl">
+        <div class="card bg-base-100 shadow-xl mb-8">
             <div class="card-body">
                 <h2 class="card-title text-2xl mb-6">Pilih Tiket</h2>
 
@@ -94,8 +105,13 @@
                                 @endif
                             </div>
 
-                            <button class="btn btn-primary w-full {{ $tiket->stok !== null && $tiket->stok <= 0 ? 'btn-disabled' : '' }}" {{ $tiket->stok !== null && $tiket->stok <= 0 ? 'disabled' : '' }}>
-                                @if ($tiket->stok !== null && $tiket->stok <= 0) Habis Terjual @else Beli Sekarang @endif </button>
+                            <form action="{{ route('orders.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="tiket_id" value="{{ $tiket->id }}">
+                                <input type="hidden" name="jumlah" value="1"> <button type="submit" class="btn btn-primary w-full {{ $tiket->stok !== null && $tiket->stok <= 0 ? 'btn-disabled' : '' }}" {{ $tiket->stok !== null && $tiket->stok <= 0 ? 'disabled' : '' }}>
+                                    @if ($tiket->stok !== null && $tiket->stok <= 0) Habis Terjual @else Beli Sekarang @endif 
+                                </button>
+                            </form>
                         </div>
                     </div>
                     @endforeach
@@ -103,7 +119,7 @@
             </div>
         </div>
         @else
-        <div class="card bg-base-100 shadow-xl">
+        <div class="card bg-base-100 shadow-xl mb-8">
             <div class="card-body text-center">
                 <h3 class="text-xl font-semibold mb-2">Tiket Tidak Tersedia</h3>
                 <p class="text-gray-600">Belum ada tiket yang tersedia untuk event ini.</p>
@@ -111,7 +127,24 @@
         </div>
         @endif
 
-        <!-- Back Button -->
+        @if(isset($relatedEvents) && $relatedEvents->isNotEmpty())
+            <div class="mt-12 mb-8">
+                <h3 class="text-2xl font-bold text-gray-800 mb-6">Event Terkait</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach($relatedEvents as $relatedEvent)
+                        <x-event-card 
+                            :title="$relatedEvent->judul" 
+                            :date="$relatedEvent->tanggal_waktu" 
+                            :location="$relatedEvent->lokasi" 
+                            :price="$relatedEvent->tikets->min('harga')" 
+                            :image="$relatedEvent->gambar" 
+                            :href="route('events.show', $relatedEvent->id)" />
+                    @endforeach
+                </div>
+            </div>
+        @endif
+        
         <div class="mt-8">
             <a href="{{ route('home') }}" class="btn btn-outline btn-wide">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
