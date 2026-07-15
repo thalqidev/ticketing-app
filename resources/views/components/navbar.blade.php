@@ -52,6 +52,11 @@
                                 Halaman Depan
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('orders.index') }}" class="py-2 mb-1 font-medium text-slate-700 hover:text-blue-900">
+                                Riwayat Pembelian
+                            </a>
+                        </li>
                     @endif
                     
                     <li>
