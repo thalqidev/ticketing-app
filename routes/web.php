@@ -25,6 +25,7 @@ class GembokAdminMiddleware
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/orders', [OrderController::class, 'index'])->middleware(['auth'])->name('orders.index');
 Route::post('/orders', [OrderController::class, 'store'])->middleware(['auth'])->name('orders.store');
 
 // Protected Admin Routes
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'verified', GembokAdminMiddleware::class])->prefix('a
         Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('edit');
         Route::put('/events/{event}', [EventController::class, 'update'])->name('update');
         Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('destroy');
+    });
+    Route::name('transactions.')->group(function () {
+        Route::get('/transactions', [OrderController::class, 'adminIndex'])->name('index');
     });
 });
 

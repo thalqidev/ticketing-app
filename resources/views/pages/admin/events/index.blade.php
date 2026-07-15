@@ -15,13 +15,13 @@
 
     @if(session('success'))
         <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium shadow-sm flex items-center">
-            <span>✨ {{ session('success') }}</span>
+            <span> {{ session('success') }}</span>
         </div>
     @endif
 
     @if(session('error'))
         <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium shadow-sm flex items-center">
-            <span>⚠️ {{ session('error') }}</span>
+            <span> {{ session('error') }}</span>
         </div>
     @endif
 
@@ -52,8 +52,8 @@
             <div class="flex flex-col gap-1">
                 <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Urutan Tanggal</label>
                 <select name="sort" class="w-full rounded-xl border-gray-200 bg-gray-50/50 text-gray-800 text-sm px-3.5 py-2.5 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition">
-                    <option value="asc" {{ request('sort', 'asc') == 'asc' ? 'selected' : '' }}>Terdekat (Ascending)</option>
-                    <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Terlama (Descending)</option>
+                    <option value="asc" {{ request('sort', 'asc') == 'asc' ? 'selected' : '' }}>Terdekat</option>
+                    <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Terlama</option>
                 </select>
             </div>
 

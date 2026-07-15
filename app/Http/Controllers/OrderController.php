@@ -69,4 +69,27 @@ class OrderController extends Controller
 
         return redirect()->back()->with('success', 'Tiket berhasil dibeli! Transaksi tercatat aman di data orders & detail, jir.');
     }
+    public function adminIndex()
+    {
+        // mengambil semua transaksi masuk dari seluruh user di database
+        $orders = DB::table('orders')
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('events', 'orders.event_id', '=', 'events.id')
+            ->join('detail_orders', 'orders.id', '=', 'detail_orders.order_id')
+            ->join('tikets', 'detail_orders.tiket_id', '=', 'tikets.id')
+            ->select(
+                'orders.id as order_id',
+                'orders.order_date',
+                'orders.total_harga',
+                'users.name as user_name',
+                'users.email as user_email',
+                'events.judul as event_judul',
+                'tikets.tipe as tiket_tipe',
+                'detail_orders.jumlah'
+            )
+            ->orderBy('orders.order_date', 'desc')
+            ->get();
+
+        return view('admin.transactions.index', compact('orders'));
+    }
 }

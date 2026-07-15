@@ -45,7 +45,18 @@
                             Manajemen Event
                         </a>
                     </li>
-                    </ul>
+
+                    <li>
+                        <a href="{{ route('transactions.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors {{ request()->routeIs('transactions.*') ? 'bg-blue-50 text-blue-600' : '' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="w-5 h-5 mr-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                <rect x="2" y="5" width="20" height="14" rx="2" />
+                                <line x1="2" y1="10" x2="22" y2="10" />
+                            </svg>
+                            Manajemen Transaksi
+                        </a>
+                    </li>
+
+                </ul>
             </div>
 
             <div class="absolute bottom-0 w-64 p-6 border-t bg-white">
